@@ -1,0 +1,11 @@
+third_party/
+data/
+outputs/
+output/
+.__pycache__/
+.idea/
+*.pyc
+.env/
+tokenizer_config.*
+*index_dataset.json
+openai_keys.txt
