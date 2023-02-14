@@ -13,7 +13,7 @@ ds_size: null              # number of instances used for the dataset, 'null' re
 index_reader:
   _target_: src.dataset_readers.index_dsr.IndexDatasetReader
   task_name: ${task_name}
-  model_name: 'bert-base-uncased'
+  model_name: 'bert-base-uncased'  # only used for tokenizer when deduplicating the index dataset
   field: q                  # 'field' of the index dataset is used for retrieval
   dataset_split: train     # the split used in the dataset if the file in `dataset_path` not exists
   dataset_path: null       # if provided a dataset_path (json file), then that file will be loaded as the index dataset

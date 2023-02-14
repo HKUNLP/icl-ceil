@@ -21,22 +21,19 @@ The black-box LM is frozen during the whole procedure.
 All required packages can be found in ``requirements.txt``. 
 You can install them in a new environment with 
 ```shell
-conda env create -n icl python=3.7
+conda create -n icl python=3.7
+conda activate icl
+
 git clone git@github.com:HKUNLP/icl-ceil.git
-pip install -r requirements.txt
+#[Optional] If you want to experiment on Break dataset with LF-EM evaluation metric, you have to clone recursively with the following commands to include third-party dependencies:
+#git clone --recurse-submodules git@github.com:HKUNLP/HKUNLP.git
 
 # The following line to be replaced depending on your cuda version.
 pip install torch==1.10.1+cu113 -f https://download.pytorch.org/whl/torch_stable.html
-```
 
-Optional: If you want to experiment on Break dataset with LF-EM evaluation metric, you have to clone recursively with the following commands to include third-party dependencies:
-```shell
-git clone --recurse-submodules git@github.com:HKUNLP/HKUNLP.git
-```
-
-Activate the environment by running 
-```shell
-conda activate icl
+cd icl-ceil
+pip install -r requirements.txt
+# if you don't want to use API from openai, just comment out the `openai` package in `requirements.txt`.
 ```
 
 Setup WandB for tracking the training status for `EPR` and `CEIL` in `scripts/run_epr.sh` and `scripts/run_dpp_epr.sh`:
