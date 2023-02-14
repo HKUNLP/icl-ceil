@@ -1,0 +1,68 @@
+hydra:
+  job:
+    chdir: false
+task_name: ???
+model_name: 'bert-base-uncased'
+pretrained_model_path: null     # the pretrained local model to load (for CEIL, EPR model is used as initialization)
+pair_wise: false                # for training CEIL, whether to use pair-wise margin loss
+
+# parameters needed to initialize the training arguments, see https://huggingface.co/docs/transformers/v4.26.0/en/main_classes/trainer#transformers.TrainingArguments
+training_args:
+  _target_: transformers.TrainingArguments
+  run_name: ???
+  output_dir: ???
+  do_train: true
+  do_eval: true
+  learning_rate: 1e-5
+  warmup_steps: 1300
+  num_train_epochs: 120
+  per_device_train_batch_size: 64
+  per_device_eval_batch_size: 64
+  gradient_accumulation_steps: 1
+  evaluation_strategy: steps
+  eval_steps: 100
+  logging_steps: 10
+  save_total_limit: 1
+  save_strategy: steps
+  save_steps: 500
+  metric_for_best_model: eval_loss
+  load_best_model_at_end: true
+
+# parameters needed to initialize the input dataset
+dataset_reader:
+  _target_: src.dataset_readers.training_dsr.TrainingDatasetReader
+  task_name: ${task_name}
+  model_name: ${model_name}
+  field: q
+  dataset_path: ???
+  ds_size: null
+
+# parameters needed to initialize the index reader
+index_reader:
+  _target_: src.dataset_readers.index_dsr.IndexDatasetReader
+  task_name: ${task_name}
+  model_name: ${model_name}
+  field: q
+  dataset_split: train           # one of `dataset_path` and `dataset_split` must be set
+  dataset_path: null
+  ds_size: null
+
+# parameters needed to initialize the batch collector
+collector:
+  hard_neg_per_step: 1          # for training EPR, the number of hard negatives in each step
+  pos_topk: 5                   # for training EPR, the number of candidates defined as positive
+  neg_topk: -5                  # for training EPR, the number of candidates defined as negatives
+  pair_wise: ${pair_wise}       # for training CEIL, whether to use pair-wise margin loss
+
+# parameters needed to initialize the bi-encoder model
+model_config:
+  _target_: src.models.biencoder.BiEncoderConfig
+  q_model_name: ${model_name}   # the encoder to encode input examples
+  ctx_model_name: ${model_name} # the encoder to encode in-context examples
+  dpp_training: false           # set for training CEIL
+  ctx_no_grad: true             # whether to freeze the context (in-context example) encoder, we share the two encoders for EPR and fix the ctx encoder for CEIL
+  pair_wise: ${pair_wise}       # for training CEIL, whether to use pair-wise margin loss
+  margin: 0.02                  # the margin used in pair-wise loss, by default the number of candidates is 50, so here margin is set to 1/50
+  scale_factor: 0.1             # the factor used to adjust the scale of relevance term and to trade-off diversity and relevance
+  norm_embed: false             # whether to normalize the embedding after q and ctx encoder
+

@@ -1,0 +1,12 @@
+model_type: api
+model:
+  _target_: src.models.api_client.OpenAIClient
+  keys_file: openai_keys.txt    # each line is a valid openai key for parallel API calls
+
+ # the generation arguments for OpenAI, refer to https://platform.openai.com/docs/api-reference/completions for details
+generation_kwargs:
+  engine: ${model_name}
+  stop: ['\n']
+  temperature: 0
+  max_tokens: 300
+  n: 1

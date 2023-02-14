@@ -1,0 +1,45 @@
+hydra:
+  job:
+    chdir: false
+output_file: ???                 # refer to `bm25_retriever.yaml` for explanation
+num_candidates: 1
+num_ice: 50
+task_name: ???
+
+batch_size: 64                   # the batch size when running encoding
+model_name: 'bert-base-uncased'  # model used to encode 'field' for each index instance
+faiss_index: ???                 # if file exists, the encoded index data will be directly loaded
+pretrained_model_path: null      # the local pretrained encoder to load, load `model_name` if is null
+
+# DPP-related arguments
+dpp_search: false                # whether to employ DPP search that considers diversity between ices
+dpp_topk: 100                    # the number to retrieve by TopK in the first stage of DPP
+mode: cand_random                # pure_random, cand_random, cand_k_dpp, map
+
+# parameters needed to initialize the input dataset
+dataset_reader:
+  _target_: src.dataset_readers.base_dsr.BaseDatasetReader
+  task_name: ${task_name}
+  model_name: ${model_name}
+  field: q
+  dataset_split: validation
+  dataset_path: null
+  ds_size: null
+
+# parameters needed to initialize the index_reader
+index_reader:
+  _target_: src.dataset_readers.index_dsr.IndexDatasetReader
+  task_name: ${task_name}
+  model_name: ${model_name}
+  field: q
+  dataset_split: train
+  dataset_path: null
+  ds_size: null
+
+# parameters needed to initialize the bi-encoder model
+model_config:
+  _target_: src.models.biencoder.BiEncoderConfig
+  q_model_name: ${model_name}
+  ctx_model_name: ${model_name}
+  norm_embed: false
+  scale_factor: 0.1  # the factor used to adjust the scale of relevance term and to trade-off diversity and relevance

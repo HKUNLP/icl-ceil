@@ -1,0 +1,10 @@
+transformers
+hydra-core
+datasets
+rank_bm25
+accelerate
+nltk
+dppy
+faiss-gpu
+spacy
+openai

@@ -1,0 +1,20 @@
+hydra:
+  job:
+    chdir: false
+output_file: ???            # ??? field must be filled in the command line
+num_candidates: 1          # ice candidates to retrieve for each input
+num_ice: 50                # number of ice in each candidate
+task_name: ???             # task name
+query_field: q              # 'query_field' of the input dataset is used for retrieval, q, a or qa
+dataset_split: validation  # the split used in the dataset
+ds_size: null              # number of instances used for the dataset, 'null' refers to 'all'
+
+# parameters needed to initialize the index_reader
+index_reader:
+  _target_: src.dataset_readers.index_dsr.IndexDatasetReader
+  task_name: ${task_name}
+  model_name: 'bert-base-uncased'
+  field: q                  # 'field' of the index dataset is used for retrieval
+  dataset_split: train     # the split used in the dataset if the file in `dataset_path` not exists
+  dataset_path: null       # if provided a dataset_path (json file), then that file will be loaded as the index dataset
+  ds_size: null            # number of instances used for the dataset, 'null' refers to 'all'

@@ -1,0 +1,33 @@
+hydra:
+  job:
+    chdir: false
+defaults:
+  - model_config: hf-gen_a      # the model config of the LM inferencer, can be `hf-gen_a` or `api-gen-a`
+
+model_name: ???                # the model name of the LM inferencer
+task_name: ???
+output_file: ???                # predictions will be saved to `output_file`
+
+batch_size: 48                  # the batch_size of the model when using `hf-gen_a` model_config; for api models, the batch size is decided based on the number of openai keys.
+
+# parameters needed to initialize the inference dataset reader
+dataset_reader:
+  _target_: src.dataset_readers.scoring_dsr.ScorerDatasetReader
+  dataset_path: null            # one of `dataset_path` and `dataset_split` must be set
+  dataset_split: null
+  ds_size: null
+  task_name: ${task_name}
+  model_name: ${model_name}
+  n_tokens: ???                # maximum number of tokens as prompt
+  field: gen_a                  # this field will be used to construct prompt
+  index_reader: ${index_reader}
+
+# parameters needed to initialize the index reader
+index_reader:
+  _target_: src.dataset_readers.index_dsr.IndexDatasetReader
+  task_name: ${task_name}
+  model_name: ${model_name}
+  field: qa                    # the field used for in-context examples, `qa` refers to the whole input-output pairs
+  dataset_path: null          # one of `dataset_path` and `dataset_split` must be set
+  dataset_split: null
+  ds_size: null
