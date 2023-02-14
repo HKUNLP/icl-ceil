@@ -1,0 +1,3 @@
+[submodule "third_party/qdecomp_with_dependency_graphs"]
+	path = third_party/qdecomp_with_dependency_graphs
+	url = https://github.com/matanhasson/qdecomp_with_dependency_graphs
