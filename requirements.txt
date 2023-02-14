@@ -2,6 +2,7 @@ transformers
 hydra-core
 datasets
 evaluate
+sklearn
 rank_bm25
 accelerate
 nltk
