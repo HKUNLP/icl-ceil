@@ -26,6 +26,7 @@ do
   retrieve_file=${run_dir}/retrieved.json
   pred_file=${run_dir}/pred.json
   mkdir -p ${run_dir}
+  mkdir -p index_data/${task_name}
 
   python dense_retriever.py output_file=${retrieve_file} \
       hydra.run.dir=${run_dir}/dense_retriever \
